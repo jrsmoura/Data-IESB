@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Admin - Gerenciar Relatórios</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <div class="container py-5">
+    <!-- Header -->
+    <div class="row mb-4">
+      <div class="col">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Gerenciar Relatórios</h2>
+          <div>
+            <span id="userEmail" class="text-muted me-3"></span>
+            <button class="btn btn-outline-secondary btn-sm" onclick="logout()">
+              <i class="bi bi-box-arrow-right"></i> Sair
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create New Report -->
+    <div class="row mb-4">
+      <div class="col">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">
+              <i class="bi bi-plus-circle"></i> Criar Novo Relatório
+            </h5>
+            <form id="createReportForm">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="titulo" class="form-label">Título</label>
+                  <input type="text" class="form-control" id="titulo" name="titulo" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="autor" class="form-label">Autor</label>
+                  <input type="text" class="form-control" id="autor" name="autor" required>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="descricao" class="form-label">Descrição</label>
+                <textarea class="form-control" id="descricao" name="descricao" rows="3" required></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="main" class="form-label">Arquivo main.py</label>
+                <input type="file" class="form-control" id="main" name="main" accept=".py" required>
+                <div class="form-text">O arquivo main.py não deve usar o método st.set_page_config() do Streamlit.</div>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-upload"></i> Criar Relatório
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Form (Hidden by default) -->
+    <div id="editSection" class="row mb-4" style="display: none;">
+      <div class="col">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="card-title">
+                <i class="bi bi-pencil"></i> Editar Relatório
+              </h5>
+              <button class="btn btn-outline-secondary btn-sm" onclick="cancelEdit()">
+                <i class="bi bi-x"></i> Cancelar
+              </button>
+            </div>
+            <form id="editReportForm">
+              <input type="hidden" id="editReportId" name="reportId">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="editTitulo" class="form-label">Título</label>
+                  <input type="text" class="form-control" id="editTitulo" name="titulo" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="editAutor" class="form-label">Autor</label>
+                  <input type="text" class="form-control" id="editAutor" name="autor" required>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="editDescricao" class="form-label">Descrição</label>
+                <textarea class="form-control" id="editDescricao" name="descricao" rows="3" required></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="editMain" class="form-label">Atualizar main.py (opcional)</label>
+                <input type="file" class="form-control" id="editMain" name="main" accept=".py">
+                <div class="form-text">Deixe em branco para manter o arquivo atual.</div>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check"></i> Salvar Alterações
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code Editor Section (Hidden by default) -->
+    <div id="codeSection" class="row mb-4" style="display: none;">
+      <div class="col">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="card-title">Editar Código Python</h5>
+              <button class="btn btn-outline-secondary btn-sm" onclick="cancelCodeEdit()">
+                <i class="bi bi-x"></i> Cancelar
+              </button>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Arquivo: <span id="codeFileName"></span></label>
+              <textarea id="codeEditor" rows="20" class="form-control" 
+                        style="font-family: 'Consolas', 'Monaco', 'Courier New', monospace; 
+                               font-size: 14px;"
+                        placeholder="# Seu código Python aqui..."></textarea>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <small class="text-muted">Use Tab para indentar | Ctrl+S para salvar</small>
+              <div>
+                <button type="button" class="btn btn-primary" onclick="saveCode()">
+                  <i class="bi bi-save"></i> Salvar Código
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">
+              <i class="bi bi-file-earmark-text"></i> Meus Relatórios
+            </h5>
+            <div id="reportsContainer">
+              <div class="text-center py-4">
+                <div class="spinner-border" role="status">
+                  <span class="visually-hidden">Carregando...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Messages -->
+    <div id="statusContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const API_BASE_URL = "https://hewx1kjfxh.execute-api.us-east-1.amazonaws.com/prod/dataiesb-auth";
+    let currentUser = null;
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if this is an OAuth callback (code parameter in URL)
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      
+      if (code) {
+        // Redirect to callback.html to handle the OAuth flow properly
+        window.location.href = 'callback.html' + window.location.search;
+        return;
+      }
+      
+      checkAuth();
+      loadReports();
+    });
+
+    function checkAuth() {
+      const token = localStorage.getItem("idToken");
+      if (!token) {
+        window.location.href = 'https://dataiesb.com/login.html';
+        return;
+      }
+
+      // Decode JWT to get user email (basic decode, not secure validation)
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        currentUser = payload.email;
+        document.getElementById('userEmail').textContent = currentUser;
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        logout();
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("idToken");
+      window.location.href = 'https://dataiesb.com/login.html';
+    }
+
+    function showStatus(message, type = 'success') {
+      const statusContainer = document.getElementById('statusContainer');
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+      alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      `;
+      statusContainer.appendChild(alertDiv);
+
+      // Auto-remove after 5 seconds
+      setTimeout(() => {
+        if (alertDiv.parentNode) {
+          alertDiv.remove();
+        }
+      }, 5000);
+    }
+
+    async function apiCall(endpoint, options = {}) {
+      const token = localStorage.getItem("idToken");
+      console.log('Making API call to:', `${API_BASE_URL}${endpoint}`);
+      console.log('Token present:', !!token);
+      
+      const defaultOptions = {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          ...options.headers
+        }
+      };
+
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        ...options,
+        ...defaultOptions
+      });
+
+      console.log('API response status:', response.status);
+
+      if (response.status === 401) {
+        console.log('Unauthorized, logging out');
+        logout();
+        return;
+      }
+
+      return response;
+    }
+
+    async function loadReports() {
+      try {
+        console.log('Loading reports from:', `${API_BASE_URL}/reports`);
+        const response = await apiCall('/reports');
+        console.log('Response status:', response?.status);
+        
+        if (response && response.ok) {
+          const reports = await response.json();
+          console.log('Reports loaded:', reports);
+          displayReports(reports);
+        } else {
+          const errorText = response ? await response.text() : 'No response';
+          console.error('Failed to load reports:', errorText);
+          showStatus(`Erro ao carregar relatórios: ${errorText}`, 'danger');
+        }
+      } catch (error) {
+        console.error('Error loading reports:', error);
+        showStatus('Erro de conexão ao carregar relatórios', 'danger');
+      }
+    }
+
+    function displayReports(reports) {
+      const container = document.getElementById('reportsContainer');
+      
+      console.log('Displaying reports:', reports);
+      
+      if (Object.keys(reports).length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-4 text-muted">
+            <i class="bi bi-file-earmark-x fs-1"></i>
+            <p class="mt-2">Nenhum relatório encontrado</p>
+          </div>
+        `;
+        return;
+      }
+
+      const reportsHtml = Object.entries(reports).map(([id, report]) => {
+        console.log(`Report ${id}:`, report, 'hidden:', report.hidden, 'type:', typeof report.hidden);
+        
+        return `
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h6 class="card-title mb-1">${report.titulo}</h6>
+                <p class="card-text text-muted mb-1">${report.descricao}</p>
+                <small class="text-muted">
+                  <i class="bi bi-person"></i> ${report.autor}
+                  ${report.deletado ? '<span class="badge bg-danger ms-2">Deletado</span>' : ''}
+                </small>
+              </div>
+              <div class="col-md-4 text-end">
+                <div class="btn-group" role="group">
+                  <button class="btn btn-outline-primary btn-sm" onclick="editReport('${id}', ${JSON.stringify(report).replace(/"/g, '&quot;')})">
+                    <i class="bi bi-pencil"></i> Editar
+                  </button>
+                  <button class="btn btn-outline-success btn-sm" onclick="editCode('${id}', '${report.titulo}')">
+                    <i class="bi bi-code-slash"></i> Código
+                  </button>
+                  ${!report.deletado ? 
+                    `<button class="btn btn-outline-danger btn-sm" onclick="deleteReport('${id}')">
+                      <i class="bi bi-trash"></i> Deletar
+                    </button>` :
+                    `<button class="btn btn-outline-success btn-sm" onclick="restoreReport('${id}')">
+                      <i class="bi bi-arrow-clockwise"></i> Restaurar
+                    </button>`
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `}).join('');
+
+      container.innerHTML = reportsHtml;
+    }
+
+    // Create Report Form Handler
+    document.getElementById('createReportForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      
+      try {
+        const response = await apiCall('/reports', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          showStatus('Relatório criado com sucesso!');
+          document.getElementById('createReportForm').reset();
+          loadReports();
+        } else {
+          const error = await response.text();
+          showStatus(`Erro ao criar relatório: ${error}`, 'danger');
+        }
+      } catch (error) {
+        console.error('Error creating report:', error);
+        showStatus('Erro de conexão ao criar relatório', 'danger');
+      }
+    });
+
+    function editReport(id, report) {
+      document.getElementById('editReportId').value = id;
+      document.getElementById('editTitulo').value = report.titulo;
+      document.getElementById('editAutor').value = report.autor;
+      document.getElementById('editDescricao').value = report.descricao;
+      
+      document.getElementById('editSection').style.display = 'block';
+      document.getElementById('editSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function cancelEdit() {
+      document.getElementById('editSection').style.display = 'none';
+      document.getElementById('editReportForm').reset();
+    }
+
+    // Edit Report Form Handler
+    document.getElementById('editReportForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      const reportId = document.getElementById('editReportId').value;
+      
+      try {
+        const response = await apiCall(`/reports/${reportId}`, {
+          method: 'PUT',
+          body: formData
+        });
+
+        if (response.ok) {
+          showStatus('Relatório atualizado com sucesso!');
+          cancelEdit();
+          loadReports();
+        } else {
+          const error = await response.text();
+          showStatus(`Erro ao atualizar relatório: ${error}`, 'danger');
+        }
+      } catch (error) {
+        console.error('Error updating report:', error);
+        showStatus('Erro de conexão ao atualizar relatório', 'danger');
+      }
+    });
+
+    async function deleteReport(id) {
+      if (!confirm('Tem certeza que deseja deletar este relatório?')) {
+        return;
+      }
+
+      try {
+        const response = await apiCall(`/reports/${id}`, {
+          method: 'DELETE'
+        });
+
+        if (response.ok) {
+          showStatus('Relatório deletado com sucesso!');
+          loadReports();
+        } else {
+          const error = await response.text();
+          showStatus(`Erro ao deletar relatório: ${error}`, 'danger');
+        }
+      } catch (error) {
+        console.error('Error deleting report:', error);
+        showStatus('Erro de conexão ao deletar relatório', 'danger');
+      }
+    }
+
+    async function restoreReport(id) {
+      try {
+        const response = await apiCall(`/reports/${id}/restore`, {
+          method: 'POST'
+        });
+
+        if (response.ok) {
+          showStatus('Relatório restaurado com sucesso!');
+          loadReports();
+        } else {
+          const error = await response.text();
+          showStatus(`Erro ao restaurar relatório: ${error}`, 'danger');
+        }
+      } catch (error) {
+        console.error('Error restoring report:', error);
+        showStatus('Erro de conexão ao restaurar relatório', 'danger');
+      }
+    }
+
+    function highlightCode() {
+      const editor = document.getElementById('codeEditor');
+      const highlight = document.getElementById('codeHighlight');
+      
+      if (!editor || !highlight) return;
+      
+      const code = editor.value;
+      
+      // Simple Python syntax highlighting
+      let highlighted = code
+        // Keywords
+        .replace(/\b(def|class|if|elif|else|for|while|try|except|finally|with|import|from|as|return|yield|break|continue|pass|lambda|and|or|not|in|is|True|False|None)\b/g, '<span style="color: #0000ff; font-weight: bold;">$1</span>')
+        // Strings
+        .replace(/(["'])((?:\\.|(?!\1)[^\\])*?)\1/g, '<span style="color: #008000;">$1$2$1</span>')
+        // Comments
+        .replace(/(#.*$)/gm, '<span style="color: #808080; font-style: italic;">$1</span>')
+        // Numbers
+        .replace(/\b(\d+\.?\d*)\b/g, '<span style="color: #ff6600;">$1</span>')
+        // Functions
+        .replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=\()/g, '<span style="color: #800080;">$1</span>')
+        // Streamlit functions
+        .replace(/\b(st\.[a-zA-Z_][a-zA-Z0-9_]*)/g, '<span style="color: #ff1493; font-weight: bold;">$1</span>');
+      
+      highlight.innerHTML = highlighted;
+    }
+
+    function syncScroll() {
+      const editor = document.getElementById('codeEditor');
+      const highlight = document.getElementById('codeHighlight');
+      
+      if (!editor || !highlight) return;
+      
+      highlight.scrollTop = editor.scrollTop;
+      highlight.scrollLeft = editor.scrollLeft;
+    }
+
+    function formatCode() {
+      const editor = document.getElementById('codeEditor');
+      let code = editor.value;
+      
+      // Basic Python formatting
+      const lines = code.split('\n');
+      let formattedLines = [];
+      let indentLevel = 0;
+      
+      for (let line of lines) {
+        const trimmed = line.trim();
+        
+        // Decrease indent for certain keywords
+        if (trimmed.startsWith('except') || trimmed.startsWith('elif') || 
+            trimmed.startsWith('else') || trimmed.startsWith('finally')) {
+          indentLevel = Math.max(0, indentLevel - 1);
+        }
+        
+        // Add proper indentation
+        if (trimmed) {
+          formattedLines.push('    '.repeat(indentLevel) + trimmed);
+        } else {
+          formattedLines.push('');
+        }
+        
+        // Increase indent after certain keywords
+        if (trimmed.endsWith(':') && (
+            trimmed.startsWith('def ') || trimmed.startsWith('class ') ||
+            trimmed.startsWith('if ') || trimmed.startsWith('elif ') ||
+            trimmed.startsWith('else:') || trimmed.startsWith('for ') ||
+            trimmed.startsWith('while ') || trimmed.startsWith('try:') ||
+            trimmed.startsWith('except') || trimmed.startsWith('finally:') ||
+            trimmed.startsWith('with ')
+        )) {
+          indentLevel++;
+        }
+      }
+      
+      editor.value = formattedLines.join('\n');
+      showStatus('Código formatado!', 'success');
+    }
+
+    function validateCode() {
+      const code = document.getElementById('codeEditor').value;
+      const issues = [];
+      
+      // Basic Python validation
+      const lines = code.split('\n');
+      let openParens = 0;
+      let openBrackets = 0;
+      let openBraces = 0;
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        
+        // Check for common issues
+        if (line.includes('st.set_page_config')) {
+          issues.push(`Linha ${i + 1}: Evite usar st.set_page_config() - será adicionado automaticamente`);
+        }
+        
+        // Count brackets
+        for (let char of line) {
+          if (char === '(') openParens++;
+          if (char === ')') openParens--;
+          if (char === '[') openBrackets++;
+          if (char === ']') openBrackets--;
+          if (char === '{') openBraces++;
+          if (char === '}') openBraces--;
+        }
+      }
+      
+      // Check for unmatched brackets
+      if (openParens !== 0) issues.push('Parênteses não balanceados');
+      if (openBrackets !== 0) issues.push('Colchetes não balanceados');
+      if (openBraces !== 0) issues.push('Chaves não balanceadas');
+      
+      if (issues.length === 0) {
+        showStatus('Código validado com sucesso!', 'success');
+      } else {
+        showStatus(`Problemas encontrados: ${issues.join('; ')}`, 'warning');
+      }
+    }
+
+    let currentEditingReportId = null;
+
+    function initializeCodeEditor() {
+      const editor = document.getElementById('codeEditor');
+      
+      // Remove any existing event listeners to prevent duplicates
+      const newEditor = editor.cloneNode(true);
+      editor.parentNode.replaceChild(newEditor, editor);
+      
+      // Add keyboard shortcuts
+      newEditor.addEventListener('keydown', function(e) {
+        // Tab for indentation
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = this.selectionStart;
+          const end = this.selectionEnd;
+          this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+          this.selectionStart = this.selectionEnd = start + 4;
+        }
+        
+        // Ctrl+S to save
+        if (e.ctrlKey && e.key === 's') {
+          e.preventDefault();
+          saveCode();
+        }
+      });
+    }
+
+    function cancelCodeEdit() {
+      document.getElementById('codeSection').style.display = 'none';
+      document.getElementById('codeEditor').value = '';
+      currentEditingReportId = null;
+      currentReportData = null;
+    }
+
+    let currentReportData = null;
+
+    async function editCode(reportId, reportTitle) {
+      currentEditingReportId = reportId;
+      document.getElementById('codeFileName').textContent = `${reportTitle}/main.py`;
+      
+      // Store current report data for saving
+      const reports = await getCurrentReports();
+      currentReportData = reports[reportId];
+      
+      try {
+        // Download current code from S3
+        const response = await apiCall(`/reports/${reportId}/download`);
+        if (response.ok) {
+          const arrayBuffer = await response.arrayBuffer();
+          const decoder = new TextDecoder('utf-8');
+          const code = decoder.decode(arrayBuffer);
+          
+          document.getElementById('codeEditor').value = code;
+          
+          // Initialize code editor with event listeners
+          initializeCodeEditor();
+          
+          document.getElementById('codeSection').style.display = 'block';
+          document.getElementById('codeSection').scrollIntoView({ behavior: 'smooth' });
+        } else {
+          const errorText = await response.text();
+          console.error('Download error:', errorText);
+          showStatus(`Erro ao carregar código: ${errorText}`, 'danger');
+        }
+      } catch (error) {
+        console.error('Error loading code:', error);
+        showStatus('Erro de conexão ao carregar código', 'danger');
+      }
+    }
+
+    async function getCurrentReports() {
+      try {
+        const response = await apiCall('/reports');
+        if (response && response.ok) {
+          return await response.json();
+        }
+      } catch (error) {
+        console.error('Error getting reports:', error);
+      }
+      return {};
+    }
+
+    async function saveCode() {
+      if (!currentEditingReportId || !currentReportData) return;
+      
+      const code = document.getElementById('codeEditor').value;
+      
+      try {
+        const response = await apiCall(`/reports/${currentEditingReportId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            titulo: currentReportData.titulo,
+            autor: currentReportData.autor,
+            descricao: currentReportData.descricao,
+            code: code
+          })
+        });
+
+        if (response.ok) {
+          showStatus('Código atualizado com sucesso!', 'success');
+          cancelCodeEdit();
+        } else {
+          const error = await response.text();
+          showStatus(`Erro ao salvar código: ${error}`, 'danger');
+        }
+      } catch (error) {
+        console.error('Error saving code:', error);
+        showStatus('Erro de conexão ao salvar código', 'danger');
+      }
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar - Data IESB</title>
+    <link rel="stylesheet" href="./style/home.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+    <div class="container nav-container">
+        <div class="logo">
+  	    <img src="https://d28lvm9jkyfotx.cloudfront.net/logo.png" alt="Data IESB Logo" style="width: 80px; height: 40px;">
+	</div>
+
+
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+        
+        <label for="menu-toggle" class="hamburger-menu">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </label>
+
+        <div class="nav-collapse">
+            <nav>
+                <ul>
+                    <li><a href="index.html">Painéis e Estudos</a></li>
+                    <li><a href="quem-somos.html">Quem somos</a></li>
+                    <li><a href="parceiros.html">Parceiros</a></li>
+                    <li><a href="contato.html">Contato</a></li>
+                    <li><a class="active" href="cadastrar.html">Cadastrar</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-container">
+                <div class="hero-text">
+                    <h1>Cadastro de Novo Usuário</h1>
+                    <p>Você será redirecionado para a página de cadastro segura da Amazon Cognito.</p>
+                    <p style="color: #dc3545; font-weight: 600; margin-top: 20px;">
+                        ⚠️ Atenção: apenas e-mails com o domínio <code>@iesb.edu.br</code> poderão ser usados para login na plataforma.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="https://auth.dataiesb.com/signup?client_id=87slk0n2malm3h7rv8p10jfak&redirect_uri=https%3A%2F%2Fdataiesb.com&response_type=code&scope=email+openid+phone" 
+                           class="btn btn-primary">Ir para Cadastro</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://d28lvm9jkyfotx.cloudfront.net/img/meeting.png" alt="Pessoas trabalhando em um escritório">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-container">
+            <p>&copy; 2025. Criado pelo Data IESB.</p>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="quem-somos.html">Quem Somos</a></li>
+                    <li><a href="parceiros.html">Parceiros</a></li>
+                    <li><a href="contato.html">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </footer>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</html>
+

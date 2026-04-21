@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /home/steiner/repos/Data-IESB-main/.github/workflows/ && cat /home/steiner/repos/Data-IESB-main/.github/workflows/*.yml 2>/dev/null | head -80)",
+      "Bash(npx create-next-app@latest frontend --typescript --tailwind --app --no-src-dir --import-alias \"@/*\" --no-eslint --yes 2>&1)",
+      "Bash(source ~/.nvm/nvm.sh && nvm use 22 && node --version && npm --version)",
+      "Bash(source ~/.nvm/nvm.sh && nvm use 22 && cd /home/steiner/repos/Data-IESB-main/frontend && rm -rf node_modules package-lock.json && npm install 2>&1 | tail -5)",
+      "Bash(source ~/.nvm/nvm.sh && nvm use 22 && npm run build 2>&1)"
+    ]
+  }
+}
