@@ -1,5 +1,11 @@
 # Big Data IESB Platform
 
+## Notas
+
+Trabalhar com o sus_aih
+tenho de fazer o mais rápido o possível.
+
+
 [![Deploy to Production](https://github.com/Data-iesb/Data-IESB/actions/workflows/deploy-main.yml/badge.svg)](https://github.com/Data-iesb/Data-IESB/actions/workflows/deploy-main.yml)
 
 **Author**: Roberto Moreira Diniz  

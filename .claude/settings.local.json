@@ -5,7 +5,31 @@
       "Bash(npx create-next-app@latest frontend --typescript --tailwind --app --no-src-dir --import-alias \"@/*\" --no-eslint --yes 2>&1)",
       "Bash(source ~/.nvm/nvm.sh && nvm use 22 && node --version && npm --version)",
       "Bash(source ~/.nvm/nvm.sh && nvm use 22 && cd /home/steiner/repos/Data-IESB-main/frontend && rm -rf node_modules package-lock.json && npm install 2>&1 | tail -5)",
-      "Bash(source ~/.nvm/nvm.sh && nvm use 22 && npm run build 2>&1)"
+      "Bash(source ~/.nvm/nvm.sh && nvm use 22 && npm run build 2>&1)",
+      "WebFetch(domain:municipios.fgv.br)",
+      "WebFetch(domain:)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v1/localidades/estados\" | head -100)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2022/variaveis/9324?localidades=N3[11]\")",
+      "Bash(curl -v \"https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2022/variaveis/9324?localidades=N3[11]\" 2>&1 | head -50)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2022/variaveis/9324\" 2>&1 | jq . 2>&1 | head -50)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2022/variaveis/9324?localidades=N3%5B11%5D\")",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/5938/periodos/2021/variaveis/37?localidades=N3%5B11%5D\")",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/5938/periodos/2021/variaveis/37,6564?localidades=N3%5B11%5D\")",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2022/variaveis/9324\" | jq . | head -100)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados?busca=populacao\" | jq . | head -50)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/6579\" | jq . | head -80)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos\" | jq .)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2022\" | jq . | head -100)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2021/variaveis\" | jq . | head -60)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2021/variaveis/9324?localidades=N3%5B11%5D\" | jq .)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2021\" | jq . | head -100)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2021/variaveis/9324?localidades=N3%5B11%5D%7CN3%5B35%5D\" | jq .)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/5938/periodos/2021\" | jq . | head -80)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/5938\" | jq . | head -150)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/5938/periodos/2021/variaveis/37?localidades=N3\" | jq . 2>&1 | head -120)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2021/variaveis/9324?localidades=N3\" | jq . 2>&1 | head -120)",
+      "Bash(curl -s \"https://servicodados.ibge.gov.br/api/v3/agregados/5938/periodos/2020/variaveis/37,6564?localidades=N3%5B11%5D\" | jq .)",
+      "Bash(cd /home/steiner/repos/Data-IESB-main/frontend && bash -c 'source ~/.nvm/nvm.sh && nvm use 22 && npm run build 2>&1')"
     ]
   }
 }
