@@ -1,0 +1,21 @@
+services:
+  db_dev:
+    image: postgres:16
+    container_name: sus_aih
+    environment:
+      POSTGRES_DB: sus_aih
+      POSTGRES_USER: user_dev
+      POSTGRES_PASSWORD: user_dev
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "user_dev", "-d", "sus_aih"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  pgdata_dev:
